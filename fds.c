@@ -3,7 +3,7 @@
 /*Open the training files using the paths written in the ocr.h file*/
 int    open_training_files(t_fds *fds)
 {
-    ssize_t n;
+    ssize_t read_lenght;
     ssize_t i = 0;
     ssize_t j = 0;
     ssize_t l = 0;
@@ -22,9 +22,9 @@ int    open_training_files(t_fds *fds)
     //skip the header of the images files
     while (i < 2)
     {
-        n = read(fds->fd_images, buf_header, sizeof(buf_header));
+        read_lenght = read(fds->fd_images, buf_header, sizeof(buf_header));
         j = 0;
-        while (j < n)
+        while (j < read_lenght)
         {
             fds->header_images[j + l] = buf_header[j];
             j++;
@@ -34,9 +34,9 @@ int    open_training_files(t_fds *fds)
     }
 
     //skip the header of the labels file
-    n = read(fds->fd_labels, buf_header, sizeof(buf_header));
+    read_lenght = read(fds->fd_labels, buf_header, sizeof(buf_header));
     j = 0;
-    while (j < n)
+    while (j < read_lenght)
     {
         fds->header_labels[j] = buf_header[j];
         j++;
@@ -47,7 +47,7 @@ int    open_training_files(t_fds *fds)
 /*Open the test files, skipping the header and using the paths written in the ocr.h file*/
 int    open_test_files(t_fds *fds)
 {
-    ssize_t n;
+    ssize_t read_lenght;
     ssize_t i = 0;
     unsigned char buf_header[8];
 
@@ -65,13 +65,13 @@ int    open_test_files(t_fds *fds)
     i = 0;
     while (i < 2)
     {
-        n = read(fds->fd_test_images, buf_header, sizeof(buf_header));
+        read_lenght = read(fds->fd_test_images, buf_header, sizeof(buf_header));
         i++;
     }
 
     //skip the header of the labels file
-    n = read(fds->fd_test_labels, buf_header, sizeof(buf_header));
-    if (n != 8)
+    read_lenght = read(fds->fd_test_labels, buf_header, sizeof(buf_header));
+    if (read_lenght != 8)
         return (-1);
     return (0);
 }

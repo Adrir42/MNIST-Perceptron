@@ -1,48 +1,47 @@
 #include "ocr.h"
 
-//l for the index of the image line, c for column
 void    forward_pass_hidden(t_sums *sum, const t_image *image, const t_network *network)
 {
-    int k = 0;
-    int i;
+    int hidden_neuron_index = 0;
+    int pixel_index;
 
-    while (k < 128)
+    while (hidden_neuron_index < NB_HIDDEN_NEURONS)
     {
-        i = 0;
-        while (i < 784)
+        pixel_index = 0;
+        while (pixel_index < 784)
         {
-            sum->z1[k] += image->data[i]* network->hidden.weights[i][k];
-            i++;
+            sum->z1[hidden_neuron_index] += image->data[pixel_index]* network->hidden.weights[pixel_index][hidden_neuron_index];
+            pixel_index++;
         }
-        sum->z1[k] += network->hidden.biases[k];
-        k++;
+        sum->z1[hidden_neuron_index] += network->hidden.biases[hidden_neuron_index];
+        hidden_neuron_index++;
     }
-    k = 0;
-    while (k < 128)
+    hidden_neuron_index = 0;
+    while (hidden_neuron_index < NB_HIDDEN_NEURONS)
     {
-        sum->a1[k] = 0;
-        if (sum->z1[k] > 0)
-            sum->a1[k] = sum->z1[k];
-        k++;
+        sum->a1[hidden_neuron_index] = 0;
+        if (sum->z1[hidden_neuron_index] > 0)
+            sum->a1[hidden_neuron_index] = sum->z1[hidden_neuron_index];
+        hidden_neuron_index++;
     }
 }
 
 void    forward_pass_output(t_sums *sum, const t_network *network)
 {
-    int k = 0;
-    int i;
+    int output_neuron_index = 0;
+    int hidden_neuron_index;
 
 
-    while (k < 10)
+    while (output_neuron_index < NB_OUTPUT_NEURONS)
     {
-        i = 0;
-        while (i < 128)
+        hidden_neuron_index = 0;
+        while (hidden_neuron_index < NB_HIDDEN_NEURONS)
         {
-            sum->z2[k] += sum->a1[i] * network->output.weights[i][k];
-            i++;
+            sum->z2[output_neuron_index] += sum->a1[hidden_neuron_index] * network->output.weights[hidden_neuron_index][output_neuron_index];
+            hidden_neuron_index++;
         }
-        sum->z2[k] += network->output.biases[k];
-        k++;
+        sum->z2[output_neuron_index] += network->output.biases[output_neuron_index];
+        output_neuron_index++;
     }
 }
 
@@ -52,42 +51,43 @@ void    softmax(t_sums *sum)
 {
     float exp_sum = 0;
     float z_max = 0;
-    int k = 0;
+    int output_neuron_index = 0;
 
-    while (k < 10)
+    while (output_neuron_index < NB_OUTPUT_NEURONS)
     {
-        if (z_max < sum->z2[k])
-            z_max = sum->z2[k];
-        k++;
+        if (z_max < sum->z2[output_neuron_index])
+            z_max = sum->z2[output_neuron_index];
+        output_neuron_index++;
     }
-    k = 0;
-    while (k < 10)
+    output_neuron_index = 0;
+    while (output_neuron_index < NB_OUTPUT_NEURONS)
     {
-        exp_sum += exp(sum->z2[k] - z_max);
-        k++;
+        exp_sum += exp(sum->z2[output_neuron_index] - z_max);
+        output_neuron_index++;
     }
-    k = 0;
-    while (k < 10)
+    output_neuron_index = 0;
+    while (output_neuron_index < NB_OUTPUT_NEURONS)
     {
-        sum->a2[k]= exp(sum->z2[k] - z_max) / exp_sum;
-        k++;
+        sum->a2[output_neuron_index]= exp(sum->z2[output_neuron_index] - z_max) / exp_sum;
+        output_neuron_index++;
     }
 }
 
+//Make a prediction of the input number based on the highest calculated probability 
 void make_prediction(t_sums *sums)
 {
     int     result = 0;
-    int     i = 0;
+    int     output_neuron_index = 0;
 
     sums->prob_max = 0;
-    while (i < 10)
+    while (output_neuron_index < NB_OUTPUT_NEURONS)
     {
-        if (sums->prob_max < sums->a2[i])
+        if (sums->prob_max < sums->a2[output_neuron_index])
         {
-            result = i;
-            sums->prob_max = sums->a2[i];
+            result = output_neuron_index;
+            sums->prob_max = sums->a2[output_neuron_index];
         }
-        i++;
+        output_neuron_index++;
     }
     sums->prediction_result = result;
 }

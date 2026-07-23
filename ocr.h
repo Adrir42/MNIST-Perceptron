@@ -1,6 +1,10 @@
 #ifndef OCR_H
 # define OCR_H
 
+/*
+INCLUDES
+*/
+
 # include <stdlib.h>
 # include <fcntl.h>
 # include <stdio.h>
@@ -9,44 +13,51 @@
 # include <time.h>
 
 /*
-Input (28*28=784 pixels) → [Hidden layer: linear + ReLU] → (128) → [Output layer : linear + softmax] → (10)
+CONSTANTS
 */
 
+//Input (28*28=784 pixels) → [Hidden layer: linear + ReLU] → (128) 
+//→ [Output layer : linear + softmax] → (10)
 # define LEARNING_RATE 0.05
+# define NB_EPOCHS 20
+# define NB_IMAGES_TRAINING_SET 60000
+# define NB_IMAGES_TEST_SET 10000
+# define IMAGE_SIZE 784
+# define NB_HIDDEN_NEURONS 128
+# define NB_OUTPUT_NEURONS 10
 
+//Paths to the dataset
 # define PATH_TRAINING_LABELS "../train-labels-idx1-ubyte/train-labels.idx1-ubyte"
 # define PATH_TRAINING_IMAGES "../train-images-idx3-ubyte/train-images.idx3-ubyte"
 # define PATH_TEST_LABELS "../t10k-labels-idx1-ubyte/t10k-labels.idx1-ubyte"
 # define PATH_TEST_IMAGES "../t10k-images-idx3-ubyte/t10k-images.idx3-ubyte"
 
+/*
+STRUCTURES
+*/
+
 typedef struct s_image
 {
-	float	        data[784];
+	float	        data[IMAGE_SIZE];
     int             label;
 }					t_image;
 
 typedef struct s_layer_hidden
 {
-    int     nb_inputs;      // (784 or 128)
-    int     nb_outputs;     // (128 or 10)
+    float   weights[IMAGE_SIZE][NB_HIDDEN_NEURONS];
+    float   biases[NB_HIDDEN_NEURONS];
 
-    float   weights[784][128];       // size = nb_inputs * nb_outputs
-    float   biases[128];        // size = nb_outputs
-
-    float   weights_grad[784][128];  // gradients of weights, same size as weights
-    float   biases_grad[128];   // gradients of biases, same size as biases
+    float   weights_grad[IMAGE_SIZE][NB_HIDDEN_NEURONS];   // gradients of weights, same size as weights
+    float   biases_grad[NB_HIDDEN_NEURONS];                // gradients of biases, same size as biases
 }   t_hidden;
 
 typedef struct s_layer_output
 {
-    int     nb_inputs;
-    int     nb_outputs;
+    float   weights[NB_HIDDEN_NEURONS][NB_OUTPUT_NEURONS];
+    float   biases[NB_OUTPUT_NEURONS];
 
-    float   weights[128][10];
-    float   biases[10];
-
-    float   weights_grad[128][10];
-    float   biases_grad[10];
+    float   weights_grad[NB_HIDDEN_NEURONS][NB_OUTPUT_NEURONS];
+    float   biases_grad[NB_OUTPUT_NEURONS];
 }   t_output;
 
 typedef struct s_network
@@ -67,10 +78,10 @@ typedef struct s_fds
 
 typedef struct s_sums
 {
-    float   z1[128];
-    float   a1[128];
-    float   z2[10];
-    float   a2[10];
+    float   z1[NB_HIDDEN_NEURONS];
+    float   a1[NB_HIDDEN_NEURONS];
+    float   z2[NB_OUTPUT_NEURONS];
+    float   a2[NB_OUTPUT_NEURONS];
     int     prediction_result;
     float   loss;
     float   prob_max;
@@ -78,10 +89,14 @@ typedef struct s_sums
 
 typedef struct s_grads
 {
-    float   z1[128];
-    float   a1[128];
-    float   z2[10];
+    float   z1[NB_HIDDEN_NEURONS];
+    float   a1[NB_HIDDEN_NEURONS];
+    float   z2[NB_OUTPUT_NEURONS];
 }					t_grads;
+
+/*
+FUNCTIONS
+*/
 
 /*
 //display_files.c
@@ -104,8 +119,8 @@ void    close_train_fds(const t_fds *fds);
 void    close_test_fds(const t_fds *fds);
 
 //init.c
-float   get_random_weight_He(t_hidden *hidden);
-float   get_random_weight_Xavier_Glorot(t_output *output);
+float   get_random_weight_He();
+float   get_random_weight_Xavier_Glorot();
 void init_hidden_layer(t_hidden *hidden);
 void init_output_layer(t_output *output);
 void    init_sums(t_sums *sums);

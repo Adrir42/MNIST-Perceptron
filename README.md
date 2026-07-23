@@ -23,7 +23,7 @@ Input (784 = 28×28 pixels) → Hidden layer (128 neurons, ReLU) → Output laye
 
 ## Requirements
 
-- A C compiler (gcc recommended)
+- GCC compiler
 - The MNIST dataset in IDX format (see Installation section)
 
 ## Installation
@@ -117,17 +117,16 @@ What is impressing with machine learning is that no recognition rule has ever be
 | `backward_pass.c` | Gradient backpropagation |
 | `display.c` / `display_files.c` | Display and debugging functions |
 | `ocr.h` | Data structures and declarations |
-## AI usage
-Claude AI has been used for this project as a step-by-step tutorial, it provided me guidance on the mathematical notions and the general structure of the program. No code has ever been generated for this project.
-## Tags
+
+## AI usage: 100% humans code
+
+Claude AI has been used for this project as a step-by-step tutorial, it provided me guidance on the mathematical notions and the general structure of the program. **No code has ever been generated for this project, **
 
 ## License
 
-### Source code
-
 This project is distributed under the MIT license.
 
-### MNIST dataset
+## MNIST dataset
 
 The MNIST dataset is **not included** in this repository and must be downloaded separately from [the official source](http://yann.lecun.com/exdb/mnist/).
 
@@ -139,4 +138,7 @@ https://www.kaggle.com/datasets/hojjatk/mnist-dataset
 ## Acknowledgements
 
 - Yann LeCun, Corinna Cortes, and Christopher J.C. Burges for creating and making the MNIST dataset available
+    - @Yann Lecun: https://github.com/ylecun
+    - @Corinna Cortes: https://github.com/ylecun
+
 - My brother Albin Cauderlier for his welcomed support and advices.
