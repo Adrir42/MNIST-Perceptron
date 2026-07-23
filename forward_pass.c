@@ -1,7 +1,7 @@
 #include "ocr.h"
 
 //l for the index of the image line, c for column
-void    forward_pass_hidden(t_sums *sum, t_image *image, t_network *network)
+void    forward_pass_hidden(t_sums *sum, const t_image *image, const t_network *network)
 {
     int k = 0;
     int i;
@@ -27,7 +27,7 @@ void    forward_pass_hidden(t_sums *sum, t_image *image, t_network *network)
     }
 }
 
-void    forward_pass_output(t_sums *sum, t_network *network)
+void    forward_pass_output(t_sums *sum, const t_network *network)
 {
     int k = 0;
     int i;
@@ -93,7 +93,7 @@ void make_prediction(t_sums *sums)
 }
 
 //In our case, we only calculate the loss on the right label
-void  cross_entropy_loss(t_sums *sums, t_image *image)
+void  cross_entropy_loss(t_sums *sums, const t_image *image)
 {
     sums->loss = - log(sums->a2[image->label]);
 }

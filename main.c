@@ -1,7 +1,6 @@
 #include "ocr.h"
 
-//784 = 28*28
-t_image *get_next_training_image(t_fds *fds)
+static t_image *get_next_image(const int fd_image, const int fd_label)
 {
     t_image *result;
     result = malloc(sizeof(t_image));
@@ -11,7 +10,7 @@ t_image *get_next_training_image(t_fds *fds)
     ssize_t i = 0;
 
     i = 0;
-    n = read(fds->fd_images, buf, sizeof(buf));
+    n = read(fd_image, buf, sizeof(buf));
     if (n < 0)
         return (NULL);
     while (i < 784)
@@ -19,36 +18,86 @@ t_image *get_next_training_image(t_fds *fds)
         result->data[i] = buf[i] / 255.0f;
         i++;
     }
-    n = read(fds->fd_labels, buf, sizeof(unsigned char));
+    n = read(fd_label, buf, sizeof(unsigned char));
     if (n < 0)
         return (NULL);
     result->label = buf[0];
     return (result);
 }
 
-t_image *get_next_test_image(t_fds *fds)
+static int training_loop(t_fds *fds, t_sums *sums, t_network *network)
 {
-    t_image *result;
-    result = malloc(sizeof(t_image));
+    t_grads grads;
+    int i;
+    int epoch = 0;
+    int count;
+    t_image *image;
 
-    unsigned char buf[784];
-    ssize_t n;
-    ssize_t i = 0;
-
-    i = 0;
-    n = read(fds->fd_test_images, buf, sizeof(buf));
-    if (n < 0)
-        return (NULL);
-    while (i < 784)
+    while (epoch < 20)
     {
-        result->data[i] = buf[i] / 255.0f;
+        i = 0;
+        count = 0;
+        if (open_training_files(fds) == -1)
+            printf("Error while opening the training files");
+        image = get_next_image(fds->fd_images, fds->fd_labels);
+        if (!image)
+        {
+            printf("Error: no training image");
+            return (-1);
+        }
+        while (image && i < 60000)
+        {
+            forward_pass(sums, image, network);
+            backward_pass(sums, &grads, image, network);
+            if (image->label == sums->prediction_result)
+                count++;
+            free(image);
+            image = get_next_image(fds->fd_images, fds->fd_labels);
+            if (!image)
+            {
+                printf("Error: no training image");
+                return (-1);
+            }
+            i++;
+        }
+        printf("Epoch %d : %d/60000 (%.2f)\n", epoch + 1, count, count/600.0);
+        close_train_fds(fds);
+        epoch++;
+    }
+    return (0);
+}
+
+int test_loop(t_fds *fds, t_sums *sums, t_network *network)
+{
+    int i = 0;
+    int count = 0;
+    t_image *image;
+
+    if (open_test_files(fds) == -1)
+        printf("Error while opening the test files");
+    image = get_next_image(fds->fd_test_images, fds->fd_test_labels);
+    if (!image)
+    {
+        printf("Error: no training image");
+        return (-1);
+    }
+    while (image && i < 10000)
+    {
+        forward_pass(sums, image, network);
+        if (image->label == sums->prediction_result)
+            count++;
+        free(image);
+        image = get_next_image(fds->fd_test_images, fds->fd_test_labels);
+        if (!image)
+        {
+            printf("Error: no training image");
+            return (-1);
+        }
         i++;
     }
-    n = read(fds->fd_test_labels, buf, sizeof(unsigned char));
-    if (n < 0)
-        return (NULL);
-    result->label = buf[0];
-    return (result);
+    printf("TEST: %d/10000 (%.2f)\n", count, count/100.0);
+    close_test_fds(fds);
+    return (0);
 }
 
 int main()
@@ -56,61 +105,15 @@ int main()
     srand(time(NULL));
     
     t_fds fds;
-
-
     t_sums sums;
-    t_grads grads;
-    t_image *image;
     t_network network;
 
     init_hidden_layer(&network.hidden);
     init_output_layer(&network.output);
 
-    int i;
-    int epoch = 0;
-    int count;
-    float count_purcents = 0;
+    training_loop(&fds, &sums, &network);
+    test_loop(&fds, &sums, &network);
 
-    while (epoch < 20)
-    {
-        open_files(&fds);
-        i = 0;
-        count = 0;
-        image = get_next_training_image(&fds);
-        while (image && i < 60000)
-        {
-            forward_pass(&sums, image, &network);
-
-//        printf("i: %d\nlabel: %d\nresult: %d\nloss: %f\naccuracy: %f\n\n", i, image->label, sums.prediction_result, sums.loss, sums.prob_max * 100);
-
-            backward_pass(&sums, &grads, image, &network);
-            if (image->label == sums.prediction_result)
-                count++;
-            free(image);
-            image = get_next_training_image(&fds);
-            i++;
-        }
-        count_purcents = count/600.0;
-        printf("Epoch %d : %d/60000 (%.2f)\n", epoch + 1, count, count_purcents);
-        close_train_fds(&fds);
-        epoch++;
-    }
-
-    //Test
-    i = 0;
-    count = 0;
-    image = get_next_test_image(&fds);
-    while (image && i < 10000)
-    {
-        forward_pass(&sums, image, &network);
-        if (image->label == sums.prediction_result)
-            count++;
-        free(image);
-        image = get_next_test_image(&fds);
-        i++;
-    }
-    count_purcents = count/100.0;
-    printf("TEST: %d/10000 (%.2f)\n", count, count_purcents);
     close_test_fds(&fds);
 
     return (0);

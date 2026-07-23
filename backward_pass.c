@@ -34,7 +34,7 @@ void    init_grads(t_grads *grads, t_network *network)
 }
 
 //grads->z2[k] = output->biases_grad donc possibilité d'utiliser moins de mémoire
-void    backward_pass_output(t_sums *sums, t_grads *grads, t_image *image, t_output *output)
+void    backward_pass_output(const t_sums *sums, t_grads *grads, const t_image *image, t_output *output)
 {
     int k = 0;
     int i;
@@ -61,7 +61,7 @@ void    backward_pass_output(t_sums *sums, t_grads *grads, t_image *image, t_out
     }
 }
 
-void    backward_pass_hidden(t_sums *sums, t_grads *grads, t_image *image, t_network *network)
+void    backward_pass_hidden(const t_sums *sums, t_grads *grads, const t_image *image, t_network *network)
 {
     int k = 0;
     int i;

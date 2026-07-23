@@ -1,6 +1,9 @@
 # Multilayer Perceptron (MLP) on MNIST - in C
 _Made by Colin Cauderlier (intra 42: ccauderl)_
 
+[![CodeFactor](https://www.codefactor.io/repository/github/adrir42/mnist-perceptron/badge/main)](https://www.codefactor.io/repository/github/adrir42/mnist-perceptron/overview/main)
+[![Quality gate status](https://sonarcloud.io/api/project_badges/measure?project=Adrir42_MNIST-Perceptron&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=Adrir42_MNIST-Perceptron)
+
 From scratch implementation, in C, of a multilayer perceptron (MLP) for handwritten digit recognition on the MNIST dataset. No deep learning library is used: the forward pass, the backpropagation and the gradient descent are all hand-coded.
 This is my first project of a neural network, so this README also shows what I understood about machine learning so far.
 
@@ -117,8 +120,7 @@ What is impressing with machine learning is that no recognition rule has ever be
 ## AI usage
 Claude AI has been used for this project as a step-by-step tutorial, it provided me guidance on the mathematical notions and the general structure of the program. No code has ever been generated for this project.
 ## Tags
-[![CodeFactor](https://www.codefactor.io/repository/github/adrir42/mnist-perceptron/badge/main)](https://www.codefactor.io/repository/github/adrir42/mnist-perceptron/overview/main)
-[![Quality gate status](https://sonarcloud.io/api/project_badges/measure?project=Adrir42_MNIST-Perceptron&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=Adrir42_MNIST-Perceptron)
+
 ## License
 
 ### Source code
