@@ -12,7 +12,10 @@ static t_image *get_next_image(const int fd_image, const int fd_label)
     pixel_index = 0;
     read_check = read(fd_image, buf, sizeof(buf));
     if (read_check != IMAGE_SIZE)
+    {
+        free(result);
         return (NULL);
+    }
     while (pixel_index < IMAGE_SIZE)
     {
         result->data[pixel_index] = buf[pixel_index] / 255.0f;
