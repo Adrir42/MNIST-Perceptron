@@ -98,7 +98,7 @@ void  cross_entropy_loss(t_sums *sums, const t_image *image)
     sums->loss = - log(sums->a2[image->label]);
 }
 
-void    forward_pass(t_sums *sums, t_image *image, t_network *network)
+void    forward_pass(t_sums *sums, const t_image *image, const t_network *network)
 {
     init_sums(sums);
     forward_pass_hidden(sums, image, network);

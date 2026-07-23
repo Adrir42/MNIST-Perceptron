@@ -2,12 +2,13 @@
 
 static t_image *get_next_image(const int fd_image, const int fd_label)
 {
-    t_image *result;
-    result = malloc(sizeof(t_image));
-
     unsigned char buf[IMAGE_SIZE];
     ssize_t read_check;
     ssize_t pixel_index = 0;
+    t_image *result;
+    result = malloc(sizeof(t_image));
+    if (!result)
+        return (NULL);
 
     pixel_index = 0;
     read_check = read(fd_image, buf, sizeof(buf));
@@ -38,11 +39,11 @@ static int training_loop(t_fds *fds, t_sums *sums, t_network *network)
         image_index = 0;
         count = 0;
         if (open_training_files(fds) == -1)
-            printf("Error while opening the training files");
+            fprintf(stderr, "Error while opening the training files\n");
         image = get_next_image(fds->fd_images, fds->fd_labels);
         if (!image)
         {
-            printf("Error: no training image");
+            fprintf(stderr, "Error while getting training image\n");
             return (-1);
         }
         while (image && image_index < NB_IMAGES_TRAINING_SET)
@@ -55,7 +56,7 @@ static int training_loop(t_fds *fds, t_sums *sums, t_network *network)
             image = get_next_image(fds->fd_images, fds->fd_labels);
             if (!image)
             {
-                printf("Error: no training image");
+                fprintf(stderr, "Error while getting training image\n");
                 return (-1);
             }
             image_index++;
@@ -74,11 +75,11 @@ int test_loop(t_fds *fds, t_sums *sums, t_network *network)
     t_image *image;
 
     if (open_test_files(fds) == -1)
-        printf("Error while opening the test files");
+        fprintf(stderr, "Error while opening the test files\n");
     image = get_next_image(fds->fd_test_images, fds->fd_test_labels);
     if (!image)
     {
-        printf("Error: no training image");
+        fprintf(stderr, "Error while getting test image\n");
         return (-1);
     }
     while (image && image_index < NB_IMAGES_TEST_SET)
@@ -90,7 +91,7 @@ int test_loop(t_fds *fds, t_sums *sums, t_network *network)
         image = get_next_image(fds->fd_test_images, fds->fd_test_labels);
         if (!image)
         {
-            printf("Error: no training image");
+            fprintf(stderr, "Error while getting test image\n");
             return (-1);
         }
         image_index++;

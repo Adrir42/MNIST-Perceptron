@@ -141,7 +141,7 @@ void    update_weights_and_biases(t_network *network)
     }
 }
 
-void    backward_pass(t_sums *sums, t_grads *grads, t_image *image, t_network *network)
+void    backward_pass(const t_sums *sums, t_grads *grads, const t_image *image, t_network *network)
 {
     init_grads(grads, network);
     backward_pass_output(sums, grads, image, &(network->output));
