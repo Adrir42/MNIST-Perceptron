@@ -23,6 +23,11 @@ int    open_training_files(t_fds *fds)
     while (i < 2)
     {
         read_lenght = read(fds->fd_images, buf_header, sizeof(buf_header));
+        if (read_lenght != 8)
+        {
+            close_train_fds(fds);
+            return (-1);
+        }
         j = 0;
         while (j < read_lenght)
         {
@@ -35,6 +40,11 @@ int    open_training_files(t_fds *fds)
 
     //skip the header of the labels file
     read_lenght = read(fds->fd_labels, buf_header, sizeof(buf_header));
+    if (read_lenght != 8)
+    {
+        close_train_fds(fds);
+        return (-1);
+    }
     j = 0;
     while (j < read_lenght)
     {
@@ -66,13 +76,21 @@ int    open_test_files(t_fds *fds)
     while (i < 2)
     {
         read_lenght = read(fds->fd_test_images, buf_header, sizeof(buf_header));
+        if (read_lenght != 8)
+        {
+            close_test_fds(fds);
+            return (-1);
+        }
         i++;
     }
 
     //skip the header of the labels file
     read_lenght = read(fds->fd_test_labels, buf_header, sizeof(buf_header));
     if (read_lenght != 8)
+    {
+        close_test_fds(fds);
         return (-1);
+    }
     return (0);
 }
 

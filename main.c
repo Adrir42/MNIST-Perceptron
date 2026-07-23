@@ -9,10 +9,9 @@ static t_image *get_next_image(const int fd_image, const int fd_label)
     result = malloc(sizeof(t_image));
     if (!result)
         return (NULL);
-
     pixel_index = 0;
     read_check = read(fd_image, buf, sizeof(buf));
-    if (read_check < 0)
+    if (read_check != IMAGE_SIZE)
         return (NULL);
     while (pixel_index < IMAGE_SIZE)
     {
@@ -20,8 +19,11 @@ static t_image *get_next_image(const int fd_image, const int fd_label)
         pixel_index++;
     }
     read_check = read(fd_label, buf, sizeof(unsigned char));
-    if (read_check < 0)
+    if (read_check != 1)
+    {
+        free(result);
         return (NULL);
+    }
     result->label = buf[0];
     return (result);
 }
@@ -54,11 +56,6 @@ static int training_loop(t_fds *fds, t_sums *sums, t_network *network)
                 count++;
             free(image);
             image = get_next_image(fds->fd_images, fds->fd_labels);
-            if (!image)
-            {
-                fprintf(stderr, "Error while getting training image\n");
-                return (-1);
-            }
             image_index++;
         }
         printf("Epoch %d : %d/60000 (%.2f)\n", epoch + 1, count, count/600.0);
@@ -89,11 +86,6 @@ int test_loop(t_fds *fds, t_sums *sums, t_network *network)
             count++;
         free(image);
         image = get_next_image(fds->fd_test_images, fds->fd_test_labels);
-        if (!image)
-        {
-            fprintf(stderr, "Error while getting test image\n");
-            return (-1);
-        }
         image_index++;
     }
     printf("TEST: %d/10000 (%.2f)\n", count, count/100.0);
