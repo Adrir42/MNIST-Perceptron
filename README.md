@@ -116,6 +116,9 @@ What is impressing with machine learning is that no recognition rule has ever be
 | `ocr.h` | Data structures and declarations |
 ## AI usage
 Claude AI has been used for this project as a step-by-step tutorial, it provided me guidance on the mathematical notions and the general structure of the program. No code has ever been generated for this project.
+## Tags
+[![CodeFactor](https://www.codefactor.io/repository/github/adrir42/mnist-perceptron/badge/main)](https://www.codefactor.io/repository/github/adrir42/mnist-perceptron/overview/main)
+[![Quality gate status](https://sonarcloud.io/api/project_badges/measure?project=Adrir42_MNIST-Perceptron&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=Adrir42_MNIST-Perceptron)
 ## License
 
 ### Source code

@@ -2,7 +2,7 @@ CC      = gcc
 CFLAGS  = -Wall -Wextra -Werror
 NAME    = perceptron
 
-SRCS    = main.c display.c display_files.c fds.c init.c forward_pass.c backward_pass.c
+SRCS    = main.c fds.c init.c forward_pass.c backward_pass.c
 OBJS    = $(SRCS:.c=.o)
 
 all: $(NAME)
