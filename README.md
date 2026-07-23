@@ -138,7 +138,8 @@ https://www.kaggle.com/datasets/hojjatk/mnist-dataset
 ## Acknowledgements
 
 - Yann LeCun, Corinna Cortes, and Christopher J.C. Burges for creating and making the MNIST dataset available
-    - @Yann Lecun: https://github.com/ylecun
-    - @Corinna Cortes: https://github.com/ylecun
+    - Yann Lecun: https://github.com/ylecun, https://www.researchgate.net/profile/Yann-Lecun-2
+    - Corinna Cortes : https://www.researchgate.net/profile/Corinna-Cortes
+    - Christopher J.C. Burges : https://www.researchgate.net/profile/Christopher-Burges
 
 - My brother Albin Cauderlier for his welcomed support and advices.
