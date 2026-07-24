@@ -2,6 +2,7 @@
 _Made by Colin Cauderlier (intra 42: ccauderl)_
 
 [![CodeFactor](https://www.codefactor.io/repository/github/adrir42/mnist-perceptron/badge/main)](https://www.codefactor.io/repository/github/adrir42/mnist-perceptron/overview/main)
+[![Codacy Badge](https://app.codacy.com/project/badge/Grade/4d51dae29e4646dc89b3b1501dcf4ba8)](https://app.codacy.com/gh/Adrir42/MNIST-Perceptron/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade)
 [![Quality gate status](https://sonarcloud.io/api/project_badges/measure?project=Adrir42_MNIST-Perceptron&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=Adrir42_MNIST-Perceptron)
 
 From scratch implementation, in C, of a multilayer perceptron (MLP) for handwritten digit recognition on the MNIST dataset. No deep learning library is used: the forward pass, the backpropagation and the gradient descent are all hand-coded.
